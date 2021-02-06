@@ -3,7 +3,8 @@ import time
 import sys
 import os
 
-import lessons.lesson1
+from lessons.lesson import Lesson
+import lessons.lesson0
 
 def main():
 
@@ -14,19 +15,36 @@ def main():
     curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_RED)
     curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_WHITE)
     #height, width = scr.getmaxyx()
+    curses.curs_set(0)
+    curses.cbreak()
+    curses.noecho()
+    scr.keypad(1)
     
     lessons = ['Lesson 0, Starting out', 'Lesson 1, The home row']
 
     q = 0
     while(q==0):
+        msg_welcome = "welcome to aoeu"
         print_title(scr)
-        print_center(scr, "welcome to aoeu", 3)
+        print_center(scr, msg_welcome, 3)
+        print_center(scr, "aoeu is made for programmers to easily switch to dvorak.", 5)
+        print_center(scr, "to start, type any number to select that lesson", 6)
+        print_center(scr, "We recommed working through linearly but that decision is left to you", 7)
         print_lessons(scr, lessons)
-        #c = scr.getch()
-        curses.curs_set(0)
+
+        f=Lesson(0)
+
         scr.refresh()
 
-        time.sleep(10)
+        c = scr.getch()
+        #print_center(scr, chr(c), 9)
+        if c >= 48 and c <= len(lessons)+48:
+            route_lesson(0)
+        else:
+            print_error(scr, "please type a number or press esc to quit")
+        
+        scr.refresh()
+        time.sleep(3)
         q = 1
     #scr.refresh()
 
@@ -55,7 +73,7 @@ def print_center(scr, msg, x=0):
 
 
 def print_lessons(scr, lessons):
-    x_start = 8
+    x_start = 10
     y_start = 4
     for i, lesson in enumerate(lessons):
         m = ''+str(i)+':  '+lesson
@@ -68,6 +86,15 @@ def cleanup():
     curses.echo()       # Turn echo back on
     curses.curs_set(1)  # Turn cursor back on
     scr.keypad(0) # Turn off keypad keys
+
+def print_error(scr, msg):
+    height, width = scr.getmaxyx()
+    scr.addstr(0, int(width)-int(len(msg)), msg, curses.color_pair(2))
+
+def route_lesson(num):
+    if num == 0:
+        scr.addscr(lessons.lesson0)
+
 
 main()
 
