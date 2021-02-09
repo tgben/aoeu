@@ -3,10 +3,17 @@ import time
 import sys
 import os
 
-from lessons.lesson import Lesson
-import lessons.lessonIntros
+#from lessons.lesson import Lesson
+#import lessons.lessonIntros
+import lesson
 
 scr = curses.initscr()
+lessons = ['Lesson 0, Starting out', 'Lesson 1, The home row', 
+            'Lesson 2, The top row', 'Lesson 3, The bottom row', 
+            'Lesson 4:, ,. <> "" :: ;;',
+            'Lesson 5, () {} []', 'Lesson 6: _- += |\ ',
+            'Lesson 7: common shell commands', 'Lesson 8: vim commands',
+            'Lesson 9: All together']
 
 def main():
 
@@ -21,45 +28,8 @@ def main():
     curses.noecho()
     scr.keypad(1)
     
-    lessons = ['Lesson 0, Starting out', 'Lesson 1, The home row', 
-            'Lesson 2, The top row', 'Lesson 3, The bottom row', 
-            'Lesson 4:, ,. <> "" :: ;;',
-            'Lesson 5, () {} []', 'Lesson 6: _- += |\ ',
-            'Lesson 6: Putting it together',
-            'Lesson 7: common shell commands', 'Lesson 8: vim commands'
-            'Lesson 9: All together']
 
-    q = 0
-    while(q==0):
-        msg_welcome = "welcome to aoeu"
-        print_title()
-        print_center(msg_welcome, 3)
-        msgl_intro = ["aoeu is made for programmers to easily switch to dvorak.",
-                "aoeu focuses on practical phrases and commands for programmers.",
-                "We quickly review the normal letters so it is recommended to practice those beforehand.",
-                "(There are plenty great tools for that elsewhere)",
-                "To start, type any number to select that lesson."]
-        print_center_stepped(msgl_intro, 6)
-        print_lessons(lessons)
-
-        f=Lesson(0)
-
-        scr.refresh()
-
-        c = scr.getch()
-
-        if c >= 48 and c <= len(lessons)+48:
-            intro = get_lesson_intro(c-48)
-            scr.clear()
-            print_title()
-            print_center_stepped([intro[0]], 3)
-            print_stepped(intro[1:], 6, 3)
-        else:
-            print_error("please type a number or press esc to quit")
-        
-        scr.refresh()
-        time.sleep(3)
-        q = 1
+    menu()
     #scr.refresh()
 
     #c = scr.getch()
@@ -69,6 +39,56 @@ def main():
     curses.endwin()
 
     return
+
+def menu():
+    q = 0
+    while(q==0):
+        msg_welcome = "welcome to aoeu"
+        msgl_intro = ["aoeu is made for programmers to easily switch to dvorak.",
+                "aoeu focuses on practical phrases and commands for programmers.",
+                "We quickly review the normal letters so it is recommended to practice those beforehand.",
+                "(There are plenty great tools for that elsewhere)",
+                "To start, type any number to select that lesson.",
+                "To quit, type tab at any time"]
+
+        #scr.clear()
+        print_title()
+        print_center(msg_welcome, 3)
+        print_center_stepped(msgl_intro, 6)
+        print_lessons(lessons)
+        scr.refresh()
+        
+        #f=Lesson(0)
+
+        c = scr.getch()
+        if c >= 48 and c <= len(lessons)+48:
+            lesson_start(c)
+        if c == 9:
+            lesson_num = c-48
+            curses.endwin()
+            quit()
+        else:
+            print_error("please type a number or press tab to quit")
+            scr.refresh()
+
+        #time.sleep(3)
+
+def lesson_start(c): 
+    lesson_num = c-48
+    intro = get_lesson_intro(lesson_num)
+    scr.clear()
+    print_title()
+    print_center_stepped([intro[0]], 3)
+    print_stepped(intro[1:], 6, 3)
+
+    c = scr.getch()
+    if c == 9: #tab key
+        scr.clear()
+        menu()
+    else:
+        #start test for lesson
+        curses.endwin()
+        quit()
 
 # the top bar
 def print_title(): 
@@ -111,8 +131,7 @@ def print_error(msg):
 
 #print intro
 def get_lesson_intro(num):
-    if num == 0:
-        return lessons.lessonIntros.get_intro(num)
+    return lesson.get_intro(num)
 
 def print_center_stepped(msgl, x_start):
     x_curr = x_start
