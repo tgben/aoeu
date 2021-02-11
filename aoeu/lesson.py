@@ -9,15 +9,7 @@
 #l = Lesson(0)
 
 lesson_intros = {
-        0 : ["Welcome to Lesson 0, Getting started",
-            "Why learn Dvorak?", 
-            "",
-            "If you've gotten this far, you probably already have a good understanding",
-            "of what dvorak is and why people switch to it so I won't bore you too much.",
-            "",
-            "How to learn Dvorak?",
-            ""
-            "This approach"],
+        0 : ["Welcome to Lesson 0, Getting started", "Why learn Dvorak? <br> If you've gotten this far, you probably already have a good understanding of what dvorak is and why people switch to it so I won't bore you too much. <br> <br> How to learn Dvorak? <br> This approach xxxyyyzzz"],
         1 : [""],
         2 : [""],
         3 : [""],
