@@ -2,10 +2,12 @@ import curses
 import time
 import sys
 import os
-
 #from lessons.lesson import Lesson
 #import lessons.lessonIntros
 import lesson
+
+ALIAS_TAB = 9
+ALIAS_BACKSPACE = 127
 
 scr = curses.initscr()
 lessons = ['Lesson 0, Starting out', 'Lesson 1, The home row', 
@@ -16,7 +18,6 @@ lessons = ['Lesson 0, Starting out', 'Lesson 1, The home row',
             'Lesson 9: All together']
 
 def main():
-
     # init
     curses.start_color()
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
@@ -57,9 +58,12 @@ def menu():
         #f=Lesson(0)
 
         c = scr.getch()
+        #scr.addstr(30,20,str(int(c)))
+        #scr.refresh()
+        #time.sleep(3)
         if c >= 48 and c <= len(lessons)+48:
             lesson_start(c)
-        if c == 9:
+        if c == ALIAS_TAB:
             lesson_num = c-48
             curses.endwin()
             quit()
@@ -76,19 +80,121 @@ def lesson_start(c):
     print_title()
     height, width = scr.getmaxyx()
 
-    #special intros for 0 and probably the last
     print_center_stepped([intro[0]], 3)
     #print_stepped(intro[1:], 6, 3)
     print_paragraph(5, int(width*.1), int(width*.9), intro[1])
 
     c = scr.getch()
-    if c == 9: #tab key
+    if c == ALIAS_TAB:
         scr.clear()
         menu()
     else:
+        text = "this is a test aoneu  2u oeun tahoeu taohenu haoetu aoh unatoheu taho uaoeut nhaoetnuh aotheu aoe uaoeut haoneuh aoeduan toeunh atodeun "
+        run_test(get_lesson_text(lesson_num))
         #start test for lesson
         curses.endwin()
         quit()
+
+def run_test(text):
+    k, cursor_x, cursor_y, i = 0,0,0,0
+    y = 3
+    error_string = []
+    timer = False
+    height, width = scr.getmaxyx()
+    width = int(width * 0.8)
+    captions = len(text) // width + 5
+    max_length = height * width - width * 2
+
+   # input string too large
+    if len(text) > max_length:
+        exit()
+
+    while k != ALIAS_TAB:
+        scr.clear()
+        scr.refresh()
+        print_title()
+
+        # put together three parts of text
+        correct_part = text[:cursor_x+(cursor_y*width)-len(error_string)]
+        error_part = ''.join(error_string)
+        future_part = text[cursor_x+(cursor_y*width):]
+
+        # print correct_part
+        scr.attron(curses.color_pair(1))
+        scr.addstr(y, 0, correct_part)
+        scr.attroff(curses.color_pair(1))
+
+        # print error_part
+        scr.attron(curses.color_pair(2))
+        scr.attron(curses.A_BOLD)
+        scr.addstr(len(correct_part) // width + y, len(correct_part) % width, error_part)
+        scr.attroff(curses.color_pair(2))
+        scr.attroff(curses.A_BOLD)
+
+        # print future_part
+        scr.addstr(len(correct_part + error_part) // width + y, len(correct_part + error_part) % width, future_part)
+
+        scr.move(cursor_y + 2, cursor_x)
+
+        # wait keypress
+        k = scr.getch()
+
+        if not timer:
+            start = time.time()
+            timer = True
+
+        # CORRECT BRANCH
+        if chr(k) == text[i] and not error_string:
+            cursor_x += 1
+            i += 1
+
+            error_string.clear()
+
+            # exit if text ended
+            if i == len(text):
+                end = time.time()
+
+                overal_time = end - start
+                overal_time_in_mins = overal_time / 60
+
+                speed = int(len(text) / overal_time_in_mins)
+
+
+                scr.addstr(captions, 0, f"Time: {round(overal_time, 2)} seconds")
+                scr.addstr(captions+1, 0, f"cpm: {speed}, wpm: {int(speed / 4.7)}")
+
+                scr.refresh()
+
+                time.sleep(5)
+                break
+
+        # INCORRECT BRANCH
+        elif (chr(k) != text[i] and k != ALIAS_BACKSPACE) or (error_string and k != ALIAS_BACKSPACE):
+
+            error_string.append(chr(k))
+            cursor_x += 1
+
+        # BACKSPACE BRANCH
+        elif k == ALIAS_BACKSPACE and error_string:
+            error_string.pop()
+            cursor_x -= 1
+
+
+        if cursor_x >= width:
+            cursor_x = 0
+            cursor_y += 1
+
+        if cursor_x < 0:
+            cursor_x = width - 1
+            cursor_y -= 1
+
+        cursor_x = max(0, cursor_x)
+        cursor_y = max(0, cursor_y)
+
+
+def get_lesson_text(num):
+    return lesson.get_text(num)[0]
+
 
 # the top bar
 def print_title(): 
