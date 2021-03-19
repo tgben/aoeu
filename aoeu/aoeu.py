@@ -2,8 +2,6 @@ import curses
 import time
 import sys
 import os
-#from lessons.lesson import Lesson
-#import lessons.lessonIntros
 import lesson
 
 ALIAS_TAB = 9
@@ -23,7 +21,6 @@ def main():
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_RED)
     curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_WHITE)
-    #height, width = scr.getmaxyx()
     curses.curs_set(0)
     curses.cbreak()
     curses.noecho()
@@ -46,21 +43,13 @@ def menu():
     while(q==0):
         msg_welcome = "welcome to aoeu"
         msg_intro = "aoeu is made for programmers to easily switch to Dvorak and focuses on practical phrases and commands for programmers. We only briefly review the normal letters so it is recommended to practice those beforehand. <br> <br> To start, type any number to select that lesson. To quit, type tab at any time"
-        #scr.clear()
         print_title()
         print_center(msg_welcome, 3)
-        #print_center_stepped(msgl_intro, 6)
         height, width = scr.getmaxyx()
         y = print_paragraph(5, int(width*.1), int(width*.9), msg_intro)
         print_lessons(lessons, int(y+2), int(width*.1 + 4))
         scr.refresh()
-        
-        #f=Lesson(0)
-
         c = scr.getch()
-        #scr.addstr(30,20,str(int(c)))
-        #scr.refresh()
-        #time.sleep(3)
         if c >= 48 and c <= len(lessons)+48:
             lesson_start(c)
         if c == ALIAS_TAB:
@@ -70,9 +59,7 @@ def menu():
         else:
             print_error("please type a number or press tab to quit")
             scr.refresh()
-
-        #time.sleep(3)
-
+            
 def lesson_start(c): 
     lesson_num = c-48
     intro = get_lesson_intro(lesson_num)
@@ -81,7 +68,6 @@ def lesson_start(c):
     height, width = scr.getmaxyx()
 
     print_center_stepped([intro[0]], 3)
-    #print_stepped(intro[1:], 6, 3)
     print_paragraph(5, int(width*.1), int(width*.9), intro[1])
 
     c = scr.getch()
