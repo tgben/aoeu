@@ -6,12 +6,12 @@ import sys
 import os
 
 
-#text = sys.stdin.read().strip().replace('\t', '').replace('\n', '')
+text = sys.stdin.read().strip().replace('\t', '').replace('\n', '')
 
 # dirty hack to make sys.stdin and curses work together
 # https://stackoverflow.com/a/4000997
-#f=open("/dev/tty")
-#os.dup2(f.fileno(), 0)
+f=open("/dev/tty")
+os.dup2(f.fileno(), 0)
 
 def main():
 
@@ -31,7 +31,7 @@ def main():
     return
     
 main()
-'''
+
 def draw_window(stdscr):
     
     k = 0
@@ -149,5 +149,5 @@ def draw_window(stdscr):
 
         cursor_x = max(0, cursor_x)
         cursor_y = max(0, cursor_y)
-'''
+
 
