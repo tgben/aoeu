@@ -5,17 +5,17 @@ import os
 #from lessons.lesson import Lesson
 #import lessons.lessonIntros
 import lesson
+import random
 
 ALIAS_TAB = 9
 ALIAS_BACKSPACE = 127
 
 scr = curses.initscr()
-lessons = ['Lesson 0, Starting out', 'Lesson 1, The home row', 
-            'Lesson 2, The top row', 'Lesson 3, The bottom row', 
-            'Lesson 4:, ,. <> "" :: ;;',
-            'Lesson 5, () {} []', 'Lesson 6: _- += |\ ',
-            'Lesson 7: common shell commands', 'Lesson 8: vim commands',
-            'Lesson 9: All together']
+lessons = ['Lesson 0, Starting out', 'Lesson 1, Review',
+        'Lesson 2:, ,. <> :;', 'Lesson 3: _- +='
+            'Lesson 4, () {} []',
+            'Lesson 5: common shell commands', 'Lesson 6: vim commands',
+            'Lesson 7: All together']
 
 def main():
     # init
@@ -89,11 +89,11 @@ def lesson_start(c):
         scr.clear()
         menu()
     else:
-        text = "this is a test aoneu  2u oeun tahoeu taohenu haoetu aoh unatoheu taho uaoeut nhaoetnuh aotheu aoe uaoeut haoneuh aoeduan toeunh atodeun "
-        run_test(get_lesson_text(lesson_num))
         #start test for lesson
-        curses.endwin()
-        quit()
+        run_test(get_lesson_text(lesson_num))
+        c = scr.getch()
+        scr.clear() 
+        lesson_start(lesson_num+48)
 
 def run_test(text):
     k, cursor_x, cursor_y, i = 0,0,0,0
@@ -165,7 +165,6 @@ def run_test(text):
 
                 scr.refresh()
 
-                time.sleep(5)
                 break
 
         # INCORRECT BRANCH
@@ -193,7 +192,16 @@ def run_test(text):
 
 
 def get_lesson_text(num):
-    return lesson.get_text(num)[0]
+    max_words = 20
+    text = ""
+    i=0
+    text_ar = lesson.get_lesson_array(num)
+    for i in range(max_words):
+        x = random.randrange(0, len(text_ar))
+        text += text_ar[x]
+        if i != max_words-1:
+            text += " "
+    return text
 
 
 # the top bar
