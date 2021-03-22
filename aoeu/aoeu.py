@@ -2,8 +2,6 @@ import curses
 import time
 import sys
 import os
-#from lessons.lesson import Lesson
-#import lessons.lessonIntros
 import lesson
 import random
 
@@ -14,7 +12,7 @@ scr = curses.initscr()
 lessons = ['Lesson 0, Starting out', 'Lesson 1, Review',
         'Lesson 2:, ,. <> :;', 'Lesson 3: _- +='
             'Lesson 4, () {} []',
-            'Lesson 5: common shell commands', 'Lesson 6: vim commands',
+            'Lesson 5: common shell commands', 
             'Lesson 7: All together']
 
 def main():
