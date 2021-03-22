@@ -25,7 +25,7 @@ def main():
     curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_WHITE)
     #height, width = scr.getmaxyx()
     curses.curs_set(0)
-    curses.cbreak()
+    curses.creak()
     curses.noecho()
     scr.keypad(1)
     
@@ -273,7 +273,6 @@ def print_paragraph(x_start, y_start, width, msg):
     return x_curr
 
 main()
-
 
 
 

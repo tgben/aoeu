@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-
+# NOT USED RIGHT NOW
 import curses
 import time
 import sys
 import os
 
+<<<<<<< HEAD
 
 text = sys.stdin.read().strip().replace('\t', '').replace('\n', '')
 
@@ -13,6 +14,8 @@ text = sys.stdin.read().strip().replace('\t', '').replace('\n', '')
 f=open("/dev/tty")
 os.dup2(f.fileno(), 0)
 
+=======
+>>>>>>> fe5a0388b38ecd27af139744a3832b1b2034e4c1
 def main():
 
     scr = curses.initscr()
@@ -31,6 +34,7 @@ def main():
     return
     
 main()
+<<<<<<< HEAD
 
 def draw_window(stdscr):
     
@@ -150,4 +154,6 @@ def draw_window(stdscr):
         cursor_x = max(0, cursor_x)
         cursor_y = max(0, cursor_y)
 
+=======
+>>>>>>> fe5a0388b38ecd27af139744a3832b1b2034e4c1
 
