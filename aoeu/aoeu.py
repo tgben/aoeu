@@ -25,7 +25,7 @@ def main():
     curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_WHITE)
     #height, width = scr.getmaxyx()
     curses.curs_set(0)
-    curses.creak()
+    curses.cbreak()
     curses.noecho()
     scr.keypad(1)
     
@@ -53,6 +53,7 @@ def menu():
         height, width = scr.getmaxyx()
         y = print_paragraph(5, int(width*.1), int(width*.9), msg_intro)
         print_lessons(lessons, int(y+2), int(width*.1 + 4))
+        print_footer()
         scr.refresh()
         
         #f=Lesson(0)
@@ -83,6 +84,7 @@ def lesson_start(c):
     print_center_stepped([intro[0]], 3)
     #print_stepped(intro[1:], 6, 3)
     print_paragraph(5, int(width*.1), int(width*.9), intro[1])
+    print_footer()
 
     c = scr.getch()
     if c == ALIAS_TAB:
@@ -105,15 +107,13 @@ def run_test(text):
     captions = len(text) // width + 5
     max_length = height * width - width * 2
 
-   # input string too large
-    if len(text) > max_length:
-        exit()
-
     while k != ALIAS_TAB:
         scr.clear()
         scr.refresh()
         print_title()
-
+        print_test_footer()
+        print_footer()
+    
         # put together three parts of text
         correct_part = text[:cursor_x+(cursor_y*width)-len(error_string)]
         error_part = ''.join(error_string)
@@ -178,7 +178,6 @@ def run_test(text):
             error_string.pop()
             cursor_x -= 1
 
-
         if cursor_x >= width:
             cursor_x = 0
             cursor_y += 1
@@ -212,13 +211,24 @@ def print_title():
     msg = "v.0.1"
     scr.addstr(0,0, msg, curses.color_pair(1))
 
+def print_test_footer():
+    height, width = scr.getmaxyx()
+    tab_msg = "[tab + any character] - return to lesson overview"
+    print_center(tab_msg, height-5)
+
+def print_footer():
+    height, width = scr.getmaxyx()
+    left = "</> Contribute on GitHub"
+    scr.addstr(height-1, 1, left, curses.color_pair(1))
+    right = "Press [tab] to go back"
+    scr.addstr(height-1, (width-1)-len(right), right, curses.color_pair(1))
+
 def print_center(msg, x=0):
     height, width = scr.getmaxyx()
     if x == 0:
         scr.addstr(int(height/2), int(width/2)-int(int(len(msg)/2)), msg)
     else:
         scr.addstr(x, int(width/2)-int(int(len(msg)/2)), msg)
-
 
 def print_lessons(lessons, x_start, y_start):
     for i, lesson in enumerate(lessons):
