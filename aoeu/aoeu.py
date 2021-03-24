@@ -10,10 +10,10 @@ ALIAS_BACKSPACE = 127
 
 scr = curses.initscr()
 lessons = ['Lesson 0, Starting out', 'Lesson 1, Review',
-        'Lesson 2:, ,. <> :;', 'Lesson 3: _- +='
+        'Lesson 2:, ,. <> :;', 'Lesson 3: _- +=',
             'Lesson 4, () {} []',
             'Lesson 5: common shell commands', 
-            'Lesson 7: All together']
+            'Lesson 6: All together']
 
 def main():
     # init
@@ -96,23 +96,27 @@ def lesson_start(c):
         lesson_start(lesson_num+48)
 
 def run_test(text):
-    k, cursor_x, cursor_y, i = 0,0,0,0
+    height, width = scr.getmaxyx()
+    k = 0
+    cursor_x = 0
+    cursor_y = 0
+    i = 0
     y = 3
     error_string = []
     timer = False
-    height, width = scr.getmaxyx()
-    width = int(width * 0.8)
     captions = len(text) // width + 5
     max_length = height * width - width * 2
-
+    text = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    text = "aa aaa"
     while k != ALIAS_TAB:
+        # print stuff
         scr.clear()
         scr.refresh()
         print_title()
-        print_test_footer()
+        print_test_footer("[tab + any character] - return to lesson overview")
         print_footer()
-    
-        # put together three parts of text
+        
+        # generate text segments
         correct_part = text[:cursor_x+(cursor_y*width)-len(error_string)]
         error_part = ''.join(error_string)
         future_part = text[cursor_x+(cursor_y*width):]
@@ -151,18 +155,13 @@ def run_test(text):
             # exit if text ended
             if i == len(text):
                 end = time.time()
-
-                overal_time = end - start
-                overal_time_in_mins = overal_time / 60
-
-                speed = int(len(text) / overal_time_in_mins)
-
-
-                scr.addstr(captions, 0, f"Time: {round(overal_time, 2)} seconds")
-                scr.addstr(captions+1, 0, f"cpm: {speed}, wpm: {int(speed / 4.7)}")
-
+                time_ = end - start
+                speed = int(len(text) / (time_/60))
+                scr.clear()
+                print_lesson_complete(end, time_, speed, captions)
+                print_title()
+                print_footer()
                 scr.refresh()
-
                 break
 
         # INCORRECT BRANCH
@@ -187,6 +186,22 @@ def run_test(text):
         cursor_x = max(0, cursor_x)
         cursor_y = max(0, cursor_y)
 
+def print_lesson_complete(end, time_, speed, captions):
+    height, width = scr.getmaxyx()
+    h = int(.3*height)
+    a=f"Time: {round(time_, 2)} seconds"
+    b=f"cpm: {speed}, wpm: {int(speed / 4.7)}"
+    m =max(len(a),len(b))
+    star = "+"+m*"-"+"+"
+    print_center(star,h-1)
+    x_ = print_center(a,h)
+    scr.addstr(h,x_-1,"|")
+    scr.addstr(h,x_+m,"|")
+    scr.addstr(h+1,x_-1,"|")
+    scr.addstr(h+1,x_+m,"|")
+    print_center(b,h+1)
+    print_center(star,h+2)
+    print_test_footer("[tab] - return to lesson overview")
 
 def get_lesson_text(num):
     max_words = 20
@@ -209,9 +224,8 @@ def print_title():
     msg = "v.0.1"
     scr.addstr(0,0, msg, curses.color_pair(1))
 
-def print_test_footer():
+def print_test_footer(tab_msg):
     height, width = scr.getmaxyx()
-    tab_msg = "[tab + any character] - return to lesson overview"
     print_center(tab_msg, height-5)
 
 def print_footer():
@@ -227,6 +241,7 @@ def print_center(msg, x=0):
         scr.addstr(int(height/2), int(width/2)-int(int(len(msg)/2)), msg)
     else:
         scr.addstr(x, int(width/2)-int(int(len(msg)/2)), msg)
+    return int(width/2)-int(int(len(msg)/2))
 
 def print_lessons(lessons, x_start, y_start):
     for i, lesson in enumerate(lessons):
