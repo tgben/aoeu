@@ -21,45 +21,33 @@ def main():
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_RED)
     curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_WHITE)
-    #height, width = scr.getmaxyx()
     curses.curs_set(0)
     curses.cbreak()
     curses.noecho()
     scr.keypad(1)
-    
 
     menu()
-    #scr.refresh()
-
-    #c = scr.getch()
-
-
-    #cleanup()
     curses.endwin()
 
     return
 
+# main menu
 def menu():
     q = 0
+    height, width = scr.getmaxyx()
     while(q==0):
         msg_welcome = "welcome to aoeu"
         msg_intro = "aoeu is made for programmers to easily switch to Dvorak and focuses on practical phrases and commands for programmers. We only briefly review the normal letters so it is recommended to practice those beforehand. <br> <br> To start, type any number to select that lesson. To quit, type tab at any time"
-        #scr.clear()
+        
         print_title()
-        print_center(msg_welcome, 3)
-        #print_center_stepped(msgl_intro, 6)
-        height, width = scr.getmaxyx()
+        print_center(msg_welcome, 3)        
         y = print_paragraph(5, int(width*.1), int(width*.9), msg_intro)
         print_lessons(lessons, int(y+2), int(width*.1 + 4))
         print_footer()
         scr.refresh()
         
-        #f=Lesson(0)
-
+        # lesson select
         c = scr.getch()
-        #scr.addstr(30,20,str(int(c)))
-        #scr.refresh()
-        #time.sleep(3)
         if c >= 48 and c <= len(lessons)+48:
             lesson_start(c)
         if c == ALIAS_TAB:
@@ -70,31 +58,30 @@ def menu():
             print_error("please type a number or press tab to quit")
             scr.refresh()
 
-        #time.sleep(3)
-
+# lessons
 def lesson_start(c): 
+    # print lesson intro
     lesson_num = c-48
     intro = get_lesson_intro(lesson_num)
     scr.clear()
-    print_title()
     height, width = scr.getmaxyx()
-
+    print_title()
     print_center_stepped([intro[0]], 3)
-    #print_stepped(intro[1:], 6, 3)
     print_paragraph(5, int(width*.1), int(width*.9), intro[1])
     print_footer()
 
+    #start test for lesson
     c = scr.getch()
     if c == ALIAS_TAB:
         scr.clear()
         menu()
     else:
-        #start test for lesson
         run_test(get_lesson_text(lesson_num))
         c = scr.getch()
         scr.clear() 
         lesson_start(lesson_num+48)
 
+# start lesson
 def run_test(text):
     height, width = scr.getmaxyx()
     k = 0
@@ -102,12 +89,11 @@ def run_test(text):
     cursor_y = 0
     i = 0
     y = 3
+    start = None
     error_string = []
-    timer = False
     captions = len(text) // width + 5
     max_length = height * width - width * 2
-    #text = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-    #text = "aa aaa"
+    text = "aa aaa"
     while k != ALIAS_TAB:
         # print stuff
         scr.clear()
@@ -141,9 +127,8 @@ def run_test(text):
         # wait keypress
         k = scr.getch()
 
-        if not timer:
+        if not start:
             start = time.time()
-            timer = True
 
         # CORRECT BRANCH
         if chr(k) == text[i] and not error_string:
