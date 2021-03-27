@@ -93,7 +93,7 @@ def run_test(text):
     error_string = []
     captions = len(text) // width + 5
     max_length = height * width - width * 2
-    text = "aa aaa"
+    #text = "aa aaa"
     while k != ALIAS_TAB:
         # print stuff
         scr.clear()
@@ -175,7 +175,7 @@ def print_lesson_complete(end, time_, speed, captions):
     height, width = scr.getmaxyx()
     h = int(.3*height)
     a=f"Time: {round(time_, 2)} seconds"
-    b=f"cpm: {speed}, wpm: {int(speed / 4.7)}"
+    b=f"WPM: {int(speed / 4.7)}"
     m =max(len(a),len(b))
     star = "+"+m*"-"+"+"
     print_center(star,h-1)
