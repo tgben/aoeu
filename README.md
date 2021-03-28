@@ -1,13 +1,8 @@
 # aoeu
+### A terminal based Dvorak application for programmers
 
-## todo
+![](aoeu/images/title.png)
 
-revamp test:
-  wrap around word/spaces, not character
-retroactively comment stuff
-
-
-
-## completed
-
-pretty results screen
+## Dependencies
+* Python 3
+* Curses
