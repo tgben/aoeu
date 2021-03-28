@@ -19,13 +19,13 @@ lesson_intros = {
         }
 
 lesson_texts = {
-        0 : ["' , . p y f g c r l a o e u i d h t n ; q j k x b m"],
-        1 : ["the be to of and a in that have I it for not on with he as you do at this but his by fom they we say her she or an will my one all would there their what so up out if about who get which go me when make can like time no just him know take pouple into year your good some could them see other then now look only come its over think also back after use two how our work first well way even new want because any these give day most us"],
-        2 : ["var: <tag> </br> </tag> i<j i>j x>f f>r r>d d<w r>i sum: max: 12; 9; 8; 0; 6; maxNum; len; sum; var; text; shell;"],
-        3 : ["num+=1 sum+=2 i+1 57+900 92+1 max+1 max+=1 num+1 len+1 max=50 sum=0 number=89 snake_case_is_cool max_num sum_var modulo_var array_sum iterate_array dashed-var branch-name-ex branch-var master-branch main-branch very-important-commit"],
-        4 : ["fun() init() sum() len() max() main() split() random() rand() randrange() var() func() function() gui() extension() get_max() set_max() set_num() get_num_func() get_best_typing_skills()"],
-        5 : ["pwd ls cd mkdir rmdir mount df uname ps kill service batch shutdown touch cat vim cat head tail cp mv comm less ls cmp dd alias history wget iptables traceroute curl find locate grep clear echo sort sudo chmod man tar whatis help"],
-        6 : ["#include util/testharness.h #include util/testutil.h namespace leveldb{ static const int kVerbose=1; static Key(status) buffer){ EncodeFixed32(buffer,i); return Slice(buffer) sizeof(uint32_t); class BloomTest{ private: const FilterPolicy policy_; std::string filter_; std::vector<std::string> keys_; buffer[sizeof(int)]; ASSERT_TRUE(!Matches(hello)); ASSERT_TRUE(!Matches(world)); length+=100 length+=1000"]
+        0 : [",~.~p~y~f~g~c~r~l~a~o~e~u~i~d~h~t~n~s~q~j~k~x~b~m~w~v~z"],
+        1 : ["the~be~to~of~and~a~in~that~have~I~it~for~not~on~with~he~as~you~do~at~this~but~his~by~fom~they~we~say~her~she~or~an~will~my~one~all~would~there~their~what~so~up~out~if~about~who~get~which~go~me~when~make~can~like~time~no~just~him~know~take~pouple~into~year~your~good~some~could~them~see~other~then~now~look~only~come~its~over~think~also~back~after~use~two~how~our~work~first~well~way~even~new~want~because~any~these~give~day~most~us"],
+        2 : ["var:~<tag>~</br>~</tag>~i < j~i > j~x > f~f > r~r > d~d < w~r > i~sum:~max:~12;~9;~8;~0;~6;~maxNum;~len;~sum;~var;~text;~shell;"],
+        3 : ["num += 1~sum += 2~i + 1~57 + 900~92 + 1~max + 1~max += 1~num + 1~len + 1~max = 50~sum = 0~number = 89~snake_case_is_cool~max_num~sum_var~modulo_var~array_sum~iterate_array~dashed-var~branch-name-ex~branch-var~master-branch~main-branch~very-important-commit"],
+        4 : ["fun()~init()~sum()~len()~max()~main()~split()~random()~rand()~randrange()~var()~func()~function()~gui()~extension()~get_max()~set_max()~set_num()~get_num_func()~get_best_typing_skills()"],
+        5 : ["pwd~ls~cd~mkdir~rmdir~mount~df~uname~ps~kill~service~batch~shutdown~touch~cat~vim~cat~head~tail~cp~mv~comm~less~ls~cmp~dd~alias~history~wget~iptables~traceroute~curl~find~locate~grep~clear~echo~sort~sudo~chmod~man~tar~whatis~help"],
+        6 : ["#include~util/testharness.h~#include~util/testutil.h~namespace~leveldb{~static~const~int~kVerbose = 1;~static Key(status far)~(buffer){~EncodeFixed32(buffer, i);~return~Slice(buffer)~sizeof(uint32_t length);~class~BloomTest{~private:~const~FilterPolicy~policy_;~std::string filter_;~std::vector<std:: string>~keys_;~buffer[sizeof(int)];~ASSERT_TRUE(!Matches(hello));~ASSERT_TRUE(!Matches(world));~length += 100~length += 1000"]
         }
 
 def get_text(num):
@@ -35,4 +35,4 @@ def get_intro(num):
     return lesson_intros[num]
 
 def get_lesson_array(num):
-    return lesson_texts[num][0].split(" ")
+    return lesson_texts[num][0].split("~")

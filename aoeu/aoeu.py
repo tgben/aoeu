@@ -48,7 +48,7 @@ def menu():
         
         # lesson select
         c = scr.getch()
-        if c >= 48 and c <= len(lessons)+48:
+        if c >= 48 and c < len(lessons)+48:
             lesson_start(c)
         if c == ALIAS_TAB:
             lesson_num = c-48
@@ -101,7 +101,7 @@ def run_test(text):
         print_title()
         print_test_footer("[tab + any character] - return to lesson overview")
         print_footer()
-        
+
         # generate text segments
         correct_part = text[:cursor_x+(cursor_y*width)-len(error_string)]
         error_part = ''.join(error_string)
@@ -134,9 +134,7 @@ def run_test(text):
         if chr(k) == text[i] and not error_string:
             cursor_x += 1
             i += 1
-
             error_string.clear()
-
             # exit if text ended
             if i == len(text):
                 end = time.time()
@@ -151,7 +149,6 @@ def run_test(text):
 
         # INCORRECT BRANCH
         elif (chr(k) != text[i] and k != ALIAS_BACKSPACE) or (error_string and k != ALIAS_BACKSPACE):
-
             error_string.append(chr(k))
             cursor_x += 1
 
