@@ -36,8 +36,8 @@ def menu():
     q = 0
     height, width = scr.getmaxyx()
     while(q==0):
-        msg_welcome = "welcome to aoeu"
-        msg_intro = "aoeu is made for programmers to easily switch to Dvorak and focuses on practical phrases and commands for programmers. We only briefly review the normal letters so it is recommended to practice those beforehand. <br> <br> To start, type any number to select that lesson. To quit, type tab at any time"
+        msg_welcome = "welcome to Aoeu"
+        msg_intro = "Aoeu was built for programmers to easily switch to Dvorak. It allows programmers to easily practice typing practical code and commands. Aoeu provides a limited review of the alphabet so it is recommended to practice those beforehand. <br> <br> To start, type any number to select that lesson. To quit, type tab at any time"
         
         print_title()
         print_center(msg_welcome, 3)        
