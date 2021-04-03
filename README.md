@@ -10,14 +10,12 @@ Practice what is most important to programmers:
 
 ![](aoeu/images/title.png)
 
+### Features
+* post-lesson analysis screen
+
+
 ## Dependencies
 * Python 3
 * Curses
 
 
-### Future features
-* Support for more layouts
-* Vim lesson
-* Language-specific lessons
-* More detailed analysis screen
-* Nicer UI with better selection feedback
