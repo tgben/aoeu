@@ -10,10 +10,11 @@ ALIAS_BACKSPACE = 127
 
 scr = curses.initscr()
 lessons = ['Lesson 0, Starting out', 'Lesson 1, Review',
-        'Lesson 2:, ,. <> :;', 'Lesson 3: _- +=',
-            'Lesson 4, () {} []',
-            'Lesson 5: common shell commands', 
-            'Lesson 6: All together']
+           'Lesson 2:, ,. <> :;', 'Lesson 3: _- +=',
+           'Lesson 4, () {} []',
+           'Lesson 5: common shell commands',
+           'Lesson 6: All together']
+
 
 def main():
     # init
@@ -32,20 +33,22 @@ def main():
     return
 
 # main menu
+
+
 def menu():
     q = 0
     height, width = scr.getmaxyx()
-    while(q==0):
+    while(q == 0):
         msg_welcome = "welcome to Aoeu"
         msg_intro = "Aoeu was built for programmers to easily switch to Dvorak. It allows programmers to easily practice typing practical code and commands. Aoeu provides a limited review of the alphabet so it is recommended to practice those beforehand. <br> <br> To start, type any number to select that lesson. To quit, type tab at any time"
-        
+
         print_title()
-        print_center(msg_welcome, 3)        
+        print_center(msg_welcome, 3)
         y = print_paragraph(5, int(width*.1), int(width*.9), msg_intro)
         print_lessons(lessons, int(y+2), int(width*.1 + 4))
         print_footer()
         scr.refresh()
-        
+
         # lesson select
         c = scr.getch()
         if c >= 48 and c < len(lessons)+48:
@@ -59,7 +62,9 @@ def menu():
             scr.refresh()
 
 # lessons
-def lesson_start(c): 
+
+
+def lesson_start(c):
     # print lesson intro
     lesson_num = c-48
     intro = get_lesson_intro(lesson_num)
@@ -70,7 +75,7 @@ def lesson_start(c):
     print_paragraph(5, int(width*.1), int(width*.9), intro[1])
     print_footer()
 
-    #start test for lesson
+    # start test for lesson
     c = scr.getch()
     if c == ALIAS_TAB:
         scr.clear()
@@ -78,10 +83,12 @@ def lesson_start(c):
     else:
         run_test(get_lesson_text(lesson_num))
         c = scr.getch()
-        scr.clear() 
+        scr.clear()
         lesson_start(lesson_num+48)
 
 # start lesson
+
+
 def run_test(text):
     height, width = scr.getmaxyx()
     k = 0
@@ -115,12 +122,14 @@ def run_test(text):
         # print error_part
         scr.attron(curses.color_pair(2))
         scr.attron(curses.A_BOLD)
-        scr.addstr(len(correct_part) // width + y, len(correct_part) % width, error_part)
+        scr.addstr(len(correct_part) // width + y,
+                   len(correct_part) % width, error_part)
         scr.attroff(curses.color_pair(2))
         scr.attroff(curses.A_BOLD)
 
         # print future_part
-        scr.addstr(len(correct_part + error_part) // width + y, len(correct_part + error_part) % width, future_part)
+        scr.addstr(len(correct_part + error_part) // width + y,
+                   len(correct_part + error_part) % width, future_part)
 
         scr.move(cursor_y + 2, cursor_x)
 
@@ -168,27 +177,29 @@ def run_test(text):
         cursor_x = max(0, cursor_x)
         cursor_y = max(0, cursor_y)
 
+
 def print_lesson_complete(end, time_, speed, captions):
     height, width = scr.getmaxyx()
     h = int(.3*height)
-    a=f"Time: {round(time_, 2)} seconds"
-    b=f"WPM: {int(speed / 4.7)}"
-    m =max(len(a),len(b))
+    a = f"Time: {round(time_, 2)} seconds"
+    b = f"WPM: {int(speed / 4.7)}"
+    m = max(len(a), len(b))
     star = "+"+m*"-"+"+"
-    print_center(star,h-1)
-    x_ = print_center(a,h)
-    scr.addstr(h,x_-1,"|")
-    scr.addstr(h,x_+m,"|")
-    scr.addstr(h+1,x_-1,"|")
-    scr.addstr(h+1,x_+m,"|")
-    print_center(b,h+1)
-    print_center(star,h+2)
+    print_center(star, h-1)
+    x_ = print_center(a, h)
+    scr.addstr(h, x_-1, "|")
+    scr.addstr(h, x_+m, "|")
+    scr.addstr(h+1, x_-1, "|")
+    scr.addstr(h+1, x_+m, "|")
+    print_center(b, h+1)
+    print_center(star, h+2)
     print_test_footer("[tab] - return to lesson overview")
+
 
 def get_lesson_text(num):
     max_words = 20
     text = ""
-    i=0
+    i = 0
     text_ar = lesson.get_lesson_array(num)
     for i in range(max_words):
         x = random.randrange(0, len(text_ar))
@@ -199,16 +210,18 @@ def get_lesson_text(num):
 
 
 # the top bar
-def print_title(): 
+def print_title():
     height, width = scr.getmaxyx()
     msg = "AOEU"
     scr.addstr(0, int(width/2)-int(int(len(msg)/2)), msg, curses.color_pair(2))
     msg = "v.0.1"
-    scr.addstr(0,0, msg, curses.color_pair(1))
+    scr.addstr(0, 0, msg, curses.color_pair(1))
+
 
 def print_test_footer(tab_msg):
     height, width = scr.getmaxyx()
     print_center(tab_msg, height-5)
+
 
 def print_footer():
     height, width = scr.getmaxyx()
@@ -216,6 +229,7 @@ def print_footer():
     scr.addstr(height-1, 1, left, curses.color_pair(1))
     right = "Press [tab] to go back"
     scr.addstr(height-1, (width-1)-len(right), right, curses.color_pair(1))
+
 
 def print_center(msg, x=0):
     height, width = scr.getmaxyx()
@@ -225,37 +239,46 @@ def print_center(msg, x=0):
         scr.addstr(x, int(width/2)-int(int(len(msg)/2)), msg)
     return int(width/2)-int(int(len(msg)/2))
 
+
 def print_lessons(lessons, x_start, y_start):
     for i, lesson in enumerate(lessons):
         m = ''+str(i)+':  '+lesson
         scr.addstr(x_start, y_start, m)
-        x_start+=1
+        x_start += 1
+
 
 def print_stepped(msgl, x_start, y):
     for msg in msgl:
         scr.addstr(x_start, y, msg)
-        x_start+=1
+        x_start += 1
+
 
 def cleanup():
     curses.nocbreak()   # Turn off cbreak mode
     curses.echo()       # Turn echo back on
     curses.curs_set(1)  # Turn cursor back on
-    scr.keypad(0) # Turn off keypad keys
+    scr.keypad(0)  # Turn off keypad keys
+
 
 def print_error(msg):
     height, width = scr.getmaxyx()
     scr.addstr(0, int(width)-int(len(msg)), msg, curses.color_pair(2))
 
-#print intro
+# print intro
+
+
 def get_lesson_intro(num):
     return lesson.get_intro(num)
+
 
 def print_center_stepped(msgl, x_start):
     x_curr = x_start
     for msg in msgl:
         print_center(msg, x_curr)
-        x_curr+=1
+        x_curr += 1
 # print paragraph style, return num of lines used
+
+
 def print_paragraph(x_start, y_start, width, msg):
     x_curr = x_start
     y_curr = y_start
@@ -277,19 +300,5 @@ def print_paragraph(x_start, y_start, width, msg):
 
     return x_curr
 
+
 main()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
