@@ -14,8 +14,3 @@ Built to help programmers who want to switch to Dvorak quickly get up to speed w
 
 ![](/img/aoeu-shell.png)
 ![](/img/aoeu-language.png)
-
-### Features
-* Gradual difficulty scale
-* 6 unique lessons and typing tests
-* Post-lesson analysis screen
