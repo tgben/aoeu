@@ -8,18 +8,14 @@ Built to help programmers who want to switch to Dvorak quickly get up to speed w
   * common phrases and variables,
   * and more.
 
-![](aoeu/images/title.png)
+![](/img/aoeu-menu.png)
 
 ## Lessons built around typing tests for useful practice:
 
-![](aoeu/images/preview.gif)
+![](/img/aoeu-shell.png)
+![](/img/aoeu-language.png)
 
 ### Features
 * Gradual difficulty scale
 * 6 unique lessons and typing tests
 * Post-lesson analysis screen
-
-
-## Dependencies
-* Python 3
-* Curses
