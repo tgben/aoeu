@@ -1,0 +1,49 @@
+{
+    "lessons": [
+        {
+            "title": "Getting started",
+            "subtitle": "Learn where the keys are.\n     Don't look down!",
+            "texts": [
+                "' , . p y f g c r l / = \\ a o e u i d h t n s - ; q j k x b m w v z\" < > P Y F G C R L ? + | A O E U I D H T N S _ : Q J K X B M W V Z"
+            ]
+            
+        },
+        {
+            "title": "Common Words",
+            "subtitle": "Common English Words",
+            "texts": [
+                "the be to of and a in that have I it for not on with he as you do at this but his by fom they we say her she or an will my one all would there their what so up out if about who get which go me when make can like time no just him know take pouple into year your good some could them see other then now look only come its over think also back after use two how our work first well way even new want because any these give day most us"
+            ]
+        },
+        {
+            "title": "Comparators",
+            "subtitle": "Comparing variables",
+            "texts": [
+                "i j k len loop < > == <= >= size > < <= >="
+            ]
+        },
+        {
+            "title": "Common Phrases",
+            "subtitle": "Common programming phrases and symbols",
+            "texts": [
+                "var   := += -= = <i> </br> </tag> i j *sum sum max sum; max; maxNum &len len var .text .len digit"
+            ]
+        },
+        {
+            "title": "Shell Commands",
+            "subtitle": "Common shell commands",
+            "texts": [
+                "pwd ls cd mkdir rmdir mount df uname ps kill service batch shutdown touch cat vim cat head tail cp mv comm less ls cmp dd alias history wget iptables traceroute curl find locate grep clear echo sort sudo chmod man tar whatis help"
+            ]
+        },
+        {
+            "title": "Language keywords",
+            "subtitle": "Keywords in popular coding languages",
+            "texts": [
+               "#include util/testharness.h #include util/testutil.h namespace static const int bool boolean char buffer return sizeof uint32_t length class private const std string vector buffer assert ASSERT_TRUE length"
+            ]
+        }
+
+
+    ]
+}
