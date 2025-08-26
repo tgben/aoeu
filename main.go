@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"log"
 	"math/rand"
 	"os"
@@ -25,7 +25,7 @@ type Lessons struct {
 	Lessons []Lesson `json:"lessons"`
 }
 
-type status_t struct {
+type Status struct {
 	menuOption  int
 	menuMode    bool
 	curTitle    string   //holds the title of the current lesson
@@ -36,10 +36,7 @@ type status_t struct {
 
 var lessons Lessons
 
-// mainly helpful pointers to tui stuff.
-// most of these are global anyway because of the ui var pretty sure.
-// a state struct didn't want to work because of some weird global holding that tui-go does
-// .. i think ..
+// Global UI component references required by tui-go library
 
 var sidebar *tui.Box
 var m *tui.Box
@@ -54,8 +51,8 @@ var ui tui.UI
 var lessonsList *tui.List
 
 // init the status (menu options and texts)
-func initStatus() *status_t {
-	status := &status_t{
+func initStatus() *Status {
+	status := &Status{
 		menuOption:  0,
 		menuMode:    true, //start in the menu
 		curSubTitle: "",
@@ -74,7 +71,7 @@ func initViewBox() *tui.Box {
 }
 
 // generate the title sreen text
-func initTitleScreen(status *status_t) *tui.Box {
+func initTitleScreen(status *Status) *tui.Box {
 	m := tui.NewVBox()
 	label := "  _    _   ___     \n /_)  / )  )_   / / \n/ /  (_/  (__  (_/  \n"
 	instructions := "How to use this program:\n\nThere are two modes: menu mode and input mode.\n\nUse the input mode to take the test and use the menu mode to switch between lessons.\n\nYou can switch between the modes by typing in the input box below.\n\n        $i and $t switch to the input.\n\n        $l and $m switch to the menu.\n\nSelect a lesson on the left to get started!"
@@ -101,7 +98,7 @@ func initMenuBox(m *tui.Box) *tui.Box {
 }
 
 // init the m box (box that wraps m)
-func initMBox(m *tui.Box, status *status_t) *tui.Box {
+func initMBox(m *tui.Box, status *Status) *tui.Box {
 	placeholder := tui.NewHBox()
 	tNS := tui.NewVBox()
 	tNS.Append(initM(status.curTitle))
@@ -112,7 +109,7 @@ func initMBox(m *tui.Box, status *status_t) *tui.Box {
 }
 
 // init the sidebar that holds the lesson list box
-func initSidebar(status *status_t) *tui.Box {
+func initSidebar(status *Status) *tui.Box {
 	lessonsList = initLessonList(status)
 	sidebar := tui.NewVBox(lessonsList)
 	sidebar.SetBorder(true)
@@ -121,7 +118,7 @@ func initSidebar(status *status_t) *tui.Box {
 }
 
 // init the lesson list box
-func initLessonList(status *status_t) *tui.List {
+func initLessonList(status *Status) *tui.List {
 	l := tui.NewList()
 	l.SetFocused(true)
 	for i := 0; i < len(lessons.Lessons); i++ {
@@ -132,7 +129,7 @@ func initLessonList(status *status_t) *tui.List {
 }
 
 // init the progress box
-func initProgressBox(status *status_t) *tui.Progress {
+func initProgressBox(status *Status) *tui.Progress {
 	//fmt.Println(len(status.curText))
 	progressBox := tui.NewProgress(len(status.curText))
 	progressBox.SetSizePolicy(tui.Expanding, tui.Maximum)
@@ -157,7 +154,7 @@ func initInputBox(input *tui.Entry) *tui.Box {
 }
 
 // update the view (reloads m, mBox, view)
-func updateView(status *status_t) {
+func updateView(status *Status) {
 	m = initM(getCurrText(status))
 	mBox = initMBox(m, status)
 	view = initViewBox()
@@ -169,16 +166,13 @@ func updateView(status *status_t) {
 func initLessons() Lessons {
 	var l Lessons
 	l = extractLessons()
-	// Texts -> textAr
+	// Convert Texts to textAr (word arrays) for easier processing
 	for i := 0; i < len(l.Lessons); i++ {
 		for j := 0; j < len(l.Lessons[i].Texts); j++ {
-			scrambledTextAr := scrambleArray(strings.Fields(l.Lessons[i].Texts[j]))
-			l.Lessons[i].textsAr = append(l.Lessons[i].textsAr, scrambledTextAr)
+			textAr := strings.Fields(l.Lessons[i].Texts[j])
+			l.Lessons[i].textsAr = append(l.Lessons[i].textsAr, textAr)
 		}
 	}
-	scrambleArray(strings.Fields(l.Lessons[0].Texts[0]))
-
-	// FIXME: only scramble once. needs to scramble every time a lesson is selected.
 
 	return l
 }
@@ -214,22 +208,22 @@ func scrambleArray(ar []string) []string {
 }
 
 // pick a random lesson. relys on the global menuOption!
-func pickLesson(status *status_t) int {
+func pickLesson(status *Status) int {
 	rand.Seed(time.Now().UnixNano())
 	randLessonidx := rand.Intn(len(lessons.Lessons[status.menuOption].textsAr))
 	// randLessonIdx := rand.Intn(1)
 	return randLessonidx
 }
 
-func getLessonTitle(status *status_t, lessonidk int) string {
+func getLessonTitle(status *Status, lessonidk int) string {
 	return lessons.Lessons[status.menuOption].Title
 }
 
-func getLessonSubTitle(status *status_t, lessonidk int) string {
+func getLessonSubTitle(status *Status, lessonidk int) string {
 	return lessons.Lessons[status.menuOption].SubTitle
 }
 
-func getLessonText(status *status_t, lessonidx int) []string {
+func getLessonText(status *Status, lessonidx int) []string {
 	l := lessons.Lessons[status.menuOption].textsAr[lessonidx]
 	l = scrambleArray(l)
 	return l
@@ -278,7 +272,7 @@ func main() {
 
 // when a sidebar lesson is selected
 // updates: menuMode, lessonsList, menuOption, idx, curText
-func handleMenuSelection(status *status_t, selectedLesson string) {
+func handleMenuSelection(status *Status, selectedLesson string) {
 	selectInput(status) //switch menu mode and deselect
 	status.idx = 0
 	for i := 0; i < len(lessons.Lessons); i++ {
@@ -294,8 +288,8 @@ func handleMenuSelection(status *status_t, selectedLesson string) {
 }
 
 // when the input changes
-// checks word on space input and resets when user types something weird
-func handleInput(status *status_t, e string, m *tui.Box, input *tui.Entry, p *tui.Progress) {
+// checks word on space input and handles invalid input
+func handleInput(status *Status, e string, m *tui.Box, input *tui.Entry, p *tui.Progress) {
 	// safety
 	if len(e) == 0 {
 		return
@@ -321,7 +315,7 @@ func handleInput(status *status_t, e string, m *tui.Box, input *tui.Entry, p *tu
 
 // handle if a cmd was attemped to be submitted (pressed enter)
 // runs commands if valid, resets input on invalid command
-func handleInputCmd(status *status_t, e string, m *tui.Box, input *tui.Entry, p *tui.Progress) {
+func handleInputCmd(status *Status, e string, m *tui.Box, input *tui.Entry, p *tui.Progress) {
 
 	// only allow one-letter commands
 	if len(e) != 2 {
@@ -345,7 +339,7 @@ func handleInputCmd(status *status_t, e string, m *tui.Box, input *tui.Entry, p 
 
 // selects the sidebar.
 // updates menuMode, lessonsList
-func selectMenu(status *status_t) {
+func selectMenu(status *Status) {
 	status.menuMode = true
 	lessonsList.SetFocused(true)
 	lessonsList.SetSelected(status.menuOption)
@@ -353,7 +347,7 @@ func selectMenu(status *status_t) {
 
 // selects the input.
 // updates menuMode, lessonsList
-func selectInput(status *status_t) {
+func selectInput(status *Status) {
 	status.menuMode = false
 	lessonsList.SetFocused(false)
 	lessonsList.SetSelected(-1)
@@ -361,7 +355,7 @@ func selectInput(status *status_t) {
 
 // checks and handles when the word is correct.
 // updates idx, input, progress bar, updates view
-func handleInputNormal(status *status_t, e string, m *tui.Box, input *tui.Entry, p *tui.Progress) {
+func handleInputNormal(status *Status, e string, m *tui.Box, input *tui.Entry, p *tui.Progress) {
 	match := checkWord(status, e)
 	if match {
 		handleCorrectWord(status, m, input, p)
@@ -379,7 +373,7 @@ func handleInputNormal(status *status_t, e string, m *tui.Box, input *tui.Entry,
 
 // handles when the correct word was submitted!
 // updates status.idx, input, progress bar, updates view
-func handleCorrectWord(status *status_t, m *tui.Box, input *tui.Entry, p *tui.Progress) {
+func handleCorrectWord(status *Status, m *tui.Box, input *tui.Entry, p *tui.Progress) {
 	status.idx += 1
 	input.SetText("")
 	updateView(status)
@@ -388,7 +382,7 @@ func handleCorrectWord(status *status_t, m *tui.Box, input *tui.Entry, p *tui.Pr
 
 // handle sumbitting (pressing enter) the input
 // can update input, idx, progress bar, view, lots of stuff
-func handleSubmit(status *status_t, e string, m *tui.Box, input *tui.Entry, p *tui.Progress) {
+func handleSubmit(status *Status, e string, m *tui.Box, input *tui.Entry, p *tui.Progress) {
 	// safety
 	if len(e) == 0 {
 		return
@@ -409,7 +403,7 @@ func handleSubmit(status *status_t, e string, m *tui.Box, input *tui.Entry, p *t
 
 // campare the input word to the current word in the text
 // returns boolean
-func checkWord(status *status_t, e string) bool {
+func checkWord(status *Status, e string) bool {
 	if e == status.curText[status.idx] {
 		return true
 	}
@@ -418,7 +412,7 @@ func checkWord(status *status_t, e string) bool {
 
 // get the text from the current index onward (returns a string)
 // used to update the view
-func getCurrText(status *status_t) string {
+func getCurrText(status *Status) string {
 	s := ""
 	for i := status.idx; i < len(status.curText); i++ {
 		s += status.curText[i] + " "
@@ -426,9 +420,8 @@ func getCurrText(status *status_t) string {
 	return s
 }
 
-// notifies the lesson is complete. resets the index
-// TODO: updates what?
-func completeLesson(status *status_t, m *tui.Box, input *tui.Entry, p *tui.Progress) {
+// notifies the lesson is complete and resets the index
+func completeLesson(status *Status, m *tui.Box, input *tui.Entry, p *tui.Progress) {
 	m.Remove(1)
 	m.Append(tui.NewHBox(
 		tui.NewLabel("Completed lesson!"),
@@ -443,7 +436,7 @@ func completeLesson(status *status_t, m *tui.Box, input *tui.Entry, p *tui.Progr
 func extractLessons() Lessons {
 	var l Lessons
 	jsonFile, _ := os.Open("lessons.json")
-	byteValue, _ := ioutil.ReadAll(jsonFile)
+	byteValue, _ := io.ReadAll(jsonFile)
 	json.Unmarshal(byteValue, &l)
 	jsonFile.Close()
 	return l
